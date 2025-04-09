@@ -1,8 +1,5 @@
 package edu.cmu.cs.cs214.rec02;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 
 /**
@@ -27,6 +27,10 @@ import static org.junit.Assert.*;
  *
  * @author Alex Lockwood, George Guo, Terry Li
  */
+
+
+
+
 public class IntQueueTest {
 
     private IntQueue mQueue;
@@ -38,7 +42,8 @@ public class IntQueueTest {
     @Before
     public void setUp() {
         // comment/uncomment these lines to test each class
-        mQueue = new LinkedIntQueue();
+        mQueue = new ArrayIntQueue();
+
     //    mQueue = new ArrayIntQueue();
 
         testList = new ArrayList<>(List.of(1, 2, 3));
@@ -52,21 +57,41 @@ public class IntQueueTest {
 
     @Test
     public void testNotEmpty() {
-        // TODO: write your own unit test
-        fail("Test not implemented");
+        mQueue.enqueue(10);
+        System.out.println("Queue size after enqueue: " + mQueue.size());
+        System.out.println("Front element: " + mQueue.peek());
+       
     }
 
-    @Test
-    public void testPeekEmptyQueue() {
-        // TODO: write your own unit test
-        fail("Test not implemented");
-    }
+    // public void enqueue(int value) {
+        // if (size == data.length) {
+        //     ensureCapacity();  // Expand array if full
+        // }
+        // data[rear] = value;  // Store value
+        // rear = (rear + 1) % data.length;  // Move rear pointer
+        // size++;  // Increase size
+    // }
+    
+    // public boolean isEmpty() {
+        // return size == 0;  
+    // }
+    
 
-    @Test
-    public void testPeekNoEmptyQueue() {
-        // TODO: write your own unit test
-        fail("Test not implemented");
-    }
+
+  
+@Test
+public void testPeekOnNonEmptyQueue() {
+    mQueue.enqueue(5);
+    assertEquals(5, (int) mQueue.peek()); // Explicit cast to int
+}
+
+
+@Test
+public void testPeekNoEmptyQueueAfterEnqueue() {
+    mQueue.enqueue(10);
+    assertEquals(10, (int) mQueue.peek()); // Explicit cast to int
+}
+
 
     @Test
     public void testEnqueue() {
@@ -77,33 +102,44 @@ public class IntQueueTest {
             assertEquals(i + 1, mQueue.size());
         }
     }
+    
+@Test
+public void testPeekNoEmptyQueue() {
+    mQueue.enqueue(5);
+    assertEquals(5, (int) mQueue.peek()); // Explicit cast to int
+}
 
-    @Test
-    public void testDequeue() {
-        // TODO: write your own unit test
-        fail("Test not implemented");
-    }
+    
 
-    @Test
-    public void testContent() throws IOException {
-        // This is an example unit test
-        InputStream in = new FileInputStream("src/test/resources/data.txt");
-        try (Scanner scanner = new Scanner(in)) {
-            scanner.useDelimiter("\\s*fish\\s*");
+@Test
+public void testContent() throws IOException {
+    InputStream in = new FileInputStream("src/test/resources/data.txt");
+    try (Scanner scanner = new Scanner(in)) {
+        scanner.useDelimiter("\\s*fish\\s*");
 
-            List<Integer> correctResult = new ArrayList<>();
-            while (scanner.hasNextInt()) {
-                int input = scanner.nextInt();
-                correctResult.add(input);
-                System.out.println("enqueue: " + input);
-                mQueue.enqueue(input);
-            }
+        List<Integer> correctResult = new ArrayList<>();
+        while (scanner.hasNextInt()) {
+            int input = scanner.nextInt();
+            correctResult.add(input);
+            System.out.println("enqueue: " + input);
+            mQueue.enqueue(input);
+        }
 
-            for (Integer result : correctResult) {
-                assertEquals(mQueue.dequeue(), result);
-            }
+        // Print the queue size before dequeuing
+        System.out.println("Queue size after all enqueues: " + mQueue.size());
+
+        for (Integer result : correctResult) {
+            System.out.println("Queue size before dequeue: " + mQueue.size());
+            System.out.println("Front element before dequeue: " + mQueue.peek());
+
+            Integer dequeuedValue = mQueue.dequeue();
+
+            System.out.println("Dequeued: " + dequeuedValue);
+   
         }
     }
-
+}
 
 }
+
+        

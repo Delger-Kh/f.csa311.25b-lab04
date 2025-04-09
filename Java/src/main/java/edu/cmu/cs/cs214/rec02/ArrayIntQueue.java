@@ -46,9 +46,7 @@ public class ArrayIntQueue implements IntQueue {
 
     /** {@inheritDoc} */
     public void clear() {
-        Arrays.fill(elementData, 0);
-        size = 0;
-        head = 0;
+        Arrays.fill(elementData, 0); 
     }
 
     /** {@inheritDoc} */
@@ -73,7 +71,7 @@ public class ArrayIntQueue implements IntQueue {
 
     /** {@inheritDoc} */
     public boolean isEmpty() {
-        return size >= 0;
+    return size >= 0;
     }
 
     /** {@inheritDoc} */

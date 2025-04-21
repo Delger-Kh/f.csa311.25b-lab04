@@ -1,8 +1,5 @@
 package edu.cmu.cs.cs214.rec02;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 
 
 /**
@@ -51,22 +51,25 @@ public class IntQueueTest {
     }
 
     @Test
-    public void testNotEmpty() {
-        // TODO: write your own unit test
-        fail("Test not implemented");
-    }
+public void testNotEmpty() {
+    mQueue.enqueue(10);
+    assertTrue(!mQueue.isEmpty());
+}
 
-    @Test
-    public void testPeekEmptyQueue() {
-        // TODO: write your own unit test
-        fail("Test not implemented");
-    }
+    
+@Test
+public void testPeekEmptyQueue() {
+    assertEquals(null, mQueue.peek());
+}
 
-    @Test
-    public void testPeekNoEmptyQueue() {
-        // TODO: write your own unit test
-        fail("Test not implemented");
-    }
+
+@Test
+public void testPeekNoEmptyQueue() {
+    mQueue.enqueue(42);
+    assertEquals((Integer)42, mQueue.peek());
+    assertEquals(1, mQueue.size());  // make sure peek doesn’t remove the element
+}
+
 
     @Test
     public void testEnqueue() {
@@ -79,10 +82,17 @@ public class IntQueueTest {
     }
 
     @Test
-    public void testDequeue() {
-        // TODO: write your own unit test
-        fail("Test not implemented");
-    }
+public void testDequeue() {
+    mQueue.enqueue(1);
+    mQueue.enqueue(2);
+    mQueue.enqueue(3);
+    
+    assertEquals((Integer)1, mQueue.dequeue());
+    assertEquals((Integer)2, mQueue.dequeue());
+    assertEquals((Integer)3, mQueue.dequeue());
+    assertTrue(mQueue.isEmpty());
+}
+
 
     @Test
     public void testContent() throws IOException {

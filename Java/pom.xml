@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
@@ -15,14 +16,23 @@
     </properties>
 
     <dependencies>
-        <!-- importing JUnit test framework       -->
+        <!-- JUnit 4 for unit testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
-        <!-- importing a jar file provided with this recitation (not usually needed) -->
+
+        <!-- Optional: Needed only if you're using Hamcrest matchers explicitly -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- LinkedIntQueue.jar added manually -->
         <dependency>
             <groupId>LinkedIntQueue</groupId>
             <artifactId>LinkedIntQueue</artifactId>
@@ -34,7 +44,7 @@
 
     <build>
         <plugins>
-            <!-- adding and configuring a plugin to collect coverage information during test execution -->
+            <!-- JaCoCo for test coverage -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -55,7 +65,8 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- a plugin to support `mvn site` to generate a website summarizing the project -->
+
+            <!-- Maven Site Plugin (optional) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
@@ -63,15 +74,9 @@
             </plugin>
         </plugins>
     </build>
+
     <reporting>
         <plugins>
-            <!-- a plugin to include test results in the `mvn site` report -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.22.2</version>
-            </plugin>
-            <!-- final plugin to include coverage information in the `mvn site` report -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -79,4 +84,5 @@
             </plugin>
         </plugins>
     </reporting>
+
 </project>

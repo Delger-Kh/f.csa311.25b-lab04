@@ -1,7 +1,5 @@
 package edu.cmu.cs.cs214.rec02;
 
-import java.util.Arrays;
-
 /**
  * A resizable-array implementation of the {@link IntQueue} interface. The head of
  * the queue starts out at the head of the array, allowing the queue to grow and
@@ -9,12 +7,29 @@ import java.util.Arrays;
  */
 public class ArrayIntQueue implements IntQueue {
 
+    /**
+     * An array holding this queue's data
+     */
     private int[] elementData;
+
+    /**
+     * Index of the next dequeue-able value
+     */
     private int head;
+
+    /**
+     * Current size of queue
+     */
     private int size;
 
+    /**
+     * The initial size for new instances of ArrayQueue
+     */
     private static final int INITIAL_SIZE = 10;
 
+    /**
+     * Constructs an empty queue with an initial capacity of ten.
+     */
     public ArrayIntQueue() {
         elementData = new int[INITIAL_SIZE];
         head = 0;
@@ -23,9 +38,13 @@ public class ArrayIntQueue implements IntQueue {
 
     /** {@inheritDoc} */
     public void clear() {
-        Arrays.fill(elementData, 0);
-        size = 0;
-        head = 0;
+        if (size > 0) {
+            for (int i = 0; i < size; i++) {
+                elementData[(head + i) % elementData.length] = 0;
+            }
+            size = 0;
+            head = 0;
+        }
     }
 
     /** {@inheritDoc} */
@@ -33,14 +52,20 @@ public class ArrayIntQueue implements IntQueue {
         if (isEmpty()) {
             return null;
         }
+        // Bug Fix #2: Convert to Integer explicitly
         Integer value = elementData[head];
+        elementData[head] = 0; // Optional: helps with garbage collection
         head = (head + 1) % elementData.length;
         size--;
         return value;
     }
 
-    /** {@inheritDoc} */
     public boolean enqueue(Integer value) {
+        // Bug Fix #3: Null check
+        if (value == null) {
+            throw new IllegalArgumentException("Null values are not allowed in queue");
+        }
+
         ensureCapacity();
         int tail = (head + size) % elementData.length;
         elementData[tail] = value;
@@ -48,12 +73,10 @@ public class ArrayIntQueue implements IntQueue {
         return true;
     }
 
-    /** ✅ FIXED: should return true only when empty */
     public boolean isEmpty() {
         return size == 0;
     }
 
-    /** ✅ FIXED: avoid peeking when empty */
     public Integer peek() {
         return isEmpty() ? null : elementData[head];
     }
@@ -62,18 +85,33 @@ public class ArrayIntQueue implements IntQueue {
     public int size() {
         return size;
     }
-
-    /** ✅ FIXED: correct queue order when expanding */
+   
+    
+    /**
+     * Increases or decreases the capacity of this <tt>ArrayIntQueue</tt> instance, if
+     * necessary, to ensure that it can hold at least size + 1 elements. 
+     * The queue shrinks when it becomes too sparse to optimize memory usage.
+     */
     private void ensureCapacity() {
         if (size == elementData.length) {
-            int oldCapacity = elementData.length;
-            int newCapacity = 2 * oldCapacity + 1;
-            int[] newData = new int[newCapacity];
-            for (int i = 0; i < size; i++) {
-                newData[i] = elementData[(head + i) % oldCapacity];
-            }
-            elementData = newData;
-            head = 0;
+            resize(elementData.length * 2 + 1);
+        } else if (size <= elementData.length / 4 && elementData.length > INITIAL_SIZE) {
+            resize(elementData.length / 2);
         }
     }
+
+    /**
+     * Resizes the internal array to the specified new capacity.
+     */
+    private void resize(int newCapacity) {
+        int[] newData = new int[newCapacity];
+        // Copy the elements into the new array, adjusting for the circular nature
+        for (int i = 0; i < size; i++) {
+            newData[i] = elementData[(head + i) % elementData.length];
+        }
+        elementData = newData;
+        head = 0; // Reset head to 0 since the new array is a flat copy
+    }
+    
 }
+

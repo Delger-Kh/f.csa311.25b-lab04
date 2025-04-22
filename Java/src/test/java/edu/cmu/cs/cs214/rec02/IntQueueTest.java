@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,8 +40,8 @@ public class IntQueueTest {
     @Before
     public void setUp() {
         // comment/uncomment these lines to test each class
-        mQueue = new LinkedIntQueue();
-    //    mQueue = new ArrayIntQueue();
+       // mQueue = new LinkedIntQueue();
+     mQueue = new ArrayIntQueue();
 
         testList = new ArrayList<>(List.of(1, 2, 3));
     }
@@ -54,9 +56,8 @@ public class IntQueueTest {
 public void testNotEmpty() {
     mQueue.enqueue(10);
     assertTrue(!mQueue.isEmpty());
-}
-
-    
+}  
+ 
 @Test
 public void testPeekEmptyQueue() {
     assertEquals(null, mQueue.peek());
@@ -68,6 +69,85 @@ public void testPeekNoEmptyQueue() {
     mQueue.enqueue(42);
     assertEquals((Integer)42, mQueue.peek());
     assertEquals(1, mQueue.size());  // make sure peek doesn’t remove the element
+}
+
+@Test
+public void testQueueShrinks() {
+    // Fill the queue to grow it first
+    for (int i = 0; i < 20; i++) {
+        mQueue.enqueue(i);
+    }
+
+    // Remove most elements to trigger shrinking
+    for (int i = 0; i < 17; i++) {
+        mQueue.dequeue();
+    }
+
+    // This will force the queue to shrink in size
+    mQueue.dequeue(); // should hit the shrink condition
+}
+@Test
+public void testEnsureCapacityTriggersShrink() {
+    // Enqueue a lot of elements to force the internal array to grow
+    for (int i = 0; i < 40; i++) {
+        mQueue.enqueue(i);
+    }
+
+    // Dequeue most elements to reduce size below 1/4 of capacity
+    for (int i = 0; i < 35; i++) {
+        mQueue.dequeue();
+    }
+
+    // This dequeue should make size small enough to trigger a shrink
+    mQueue.dequeue();
+}
+
+@Test
+public void testDequeueFromEmptyQueue() {
+    assertNull(mQueue.dequeue());
+}
+
+@Test
+public void testClear() {
+    mQueue.enqueue(10);
+    mQueue.enqueue(20);
+    mQueue.enqueue(30);
+    mQueue.clear();
+    assertTrue(mQueue.isEmpty());
+    assertEquals(0, mQueue.size());
+    //assertNull(mQueue.dequeue());
+}
+@Test
+public void testEnsureCapacityShrink() {
+    // Step 1: Enqueue enough to grow the array (usually doubles to 21, 43, etc.)
+    for (int i = 0; i < 50; i++) {
+        mQueue.enqueue(i);
+    }
+
+    // Step 2: Dequeue until size is <= 1/4 of elementData.length
+    for (int i = 0; i < 40; i++) {
+        mQueue.dequeue();
+    }
+
+    // Step 3: Force ensureCapacity() to be called (e.g., via enqueue)
+    mQueue.enqueue(999); // This should now trigger the shrinking branch
+}
+
+@Test
+public void testNullEnqueueThrows() {
+    try {
+        mQueue.enqueue(null);
+        fail("Expected IllegalArgumentException for null enqueue");
+    } catch (IllegalArgumentException e) {
+        assertEquals("Null values are not allowed in queue", e.getMessage());
+    }
+}
+
+@Test
+public void testClearWhenEmpty() {
+    // Queue is empty initially
+    mQueue.clear(); // Should hit the `if (size > 0)` as false
+    assertTrue(mQueue.isEmpty());
 }
 
 
